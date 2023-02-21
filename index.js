@@ -23,6 +23,9 @@ function getCartTotal(cart) {
   for (let product of cart) {
     result += product.priceInCents;
   }
+  if (!result) {
+    throw "Error : Cart is empty";
+  }
   return result;
 }
 
@@ -40,10 +43,21 @@ function filterProductsByPriceRange(products, min, max) {
   for (let product of products) {
     if (product.priceInCents >= min && product.priceInCents <= max) {
       result.push(product);
+    } else if (product.priceInCents === undefined) {
+      throw `error : No Price In cents  + product.`;
     }
   }
+  if (products.length === 0) {
+    throw `error : no Product`;
+  } else if (max <= 0 || min < 0) {
+    throw `error: no price`;
+  } else if (isNaN(max) === true || isNaN(min) === true) {
+    throw `error: not a number`;
+  }
+
   return result;
 }
+console.log(getCartTotal(exampleProducts));
 
 /*
   If any errors occur in this function, it should return `0`.
