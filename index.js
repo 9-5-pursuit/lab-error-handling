@@ -10,7 +10,7 @@ const exampleProducts = [
   { id: 2, name: "Low Profile Sleigh Bed", priceInCents: 22999 },
   { id: 3, name: "Oval 100% Cotton Solid Bath Rug", priceInCents: 1399 },
   { id: 4, name: "Abstract Light Gray Area Rug", priceInCents: 33999 },
-  { id: 5, name: "Multi Game Table", priceInCents: 81743 },
+  { id: 5, name: "Multi Game Table", priceInCents: 81743 }
 ];
 // Do not change the line above.
 
@@ -22,6 +22,9 @@ function getCartTotal(cart) {
   let result = 0;
   for (let product of cart) {
     result += product.priceInCents;
+  }
+  if (result === 0) {
+    throw "Cart is empty.";
   }
   return result;
 }
@@ -36,8 +39,22 @@ function getCartTotal(cart) {
   - Any of the products in the `products` array does not have a `priceInCents` key.
 */
 function filterProductsByPriceRange(products, min, max) {
+  if (
+    products.length < 1 ||
+    typeof min !== "number" ||
+    typeof max !== "number" ||
+    max < 1 ||
+    min > max ||
+    min < 0
+  ) {
+    throw "An Error Has Occurred!";
+  }
   const result = [];
   for (let product of products) {
+    // I know this can be done with the every method...but I guess I need to do some more reading on it.
+    if (!product.priceInCents) {
+      throw "An Error Has Occurred - Missing Price!";
+    }
     if (product.priceInCents >= min && product.priceInCents <= max) {
       result.push(product);
     }
@@ -49,14 +66,17 @@ function filterProductsByPriceRange(products, min, max) {
   If any errors occur in this function, it should return `0`.
 */
 function getTotalOfAllProductsByPriceRange(products, min, max) {
-  const filteredProducts = filterProductsByPriceRange(products, min, max);
-  const total = getCartTotal(filteredProducts);
-
-  return total;
+  try {
+    const filteredProducts = filterProductsByPriceRange(products, min, max);
+    const total = getCartTotal(filteredProducts);
+    return total;
+  } catch (error) {
+    return 0;
+  }
 }
 
 module.exports = {
   getCartTotal,
   filterProductsByPriceRange,
-  getTotalOfAllProductsByPriceRange,
+  getTotalOfAllProductsByPriceRange
 };
