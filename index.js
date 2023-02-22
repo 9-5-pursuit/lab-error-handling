@@ -20,6 +20,9 @@ const exampleProducts = [
 */
 function getCartTotal(cart) {
   let result = 0;
+  if (!cart.length) {
+    throw `The ${cart} array is empty.`;
+  }
   for (let product of cart) {
     result += product.priceInCents;
   }
@@ -37,9 +40,28 @@ function getCartTotal(cart) {
 */
 function filterProductsByPriceRange(products, min, max) {
   const result = [];
+  if (!products.length) {
+    throw `The ${products} array is empty.`;
+  }
+  if (typeof min !== "number" || typeof max !== "number") {
+    throw `${min} or ${max} is not a number.`;
+  }
+  if (max === 0) {
+    throw `${max} is equal to ${0}.`;
+  }
+  if (min > max) {
+    throw `${min} is greater than the ${max}.`;
+  }
+  if (min < 0 || max < 0) {
+    throw `${min} or ${max} is less than ${0}.`;
+  }
+
   for (let product of products) {
     if (product.priceInCents >= min && product.priceInCents <= max) {
       result.push(product);
+    }
+    if (!product.priceInCents) {
+      throw `${product} array does not have a ${priceInCents} key.`;
     }
   }
   return result;
@@ -49,10 +71,14 @@ function filterProductsByPriceRange(products, min, max) {
   If any errors occur in this function, it should return `0`.
 */
 function getTotalOfAllProductsByPriceRange(products, min, max) {
-  const filteredProducts = filterProductsByPriceRange(products, min, max);
-  const total = getCartTotal(filteredProducts);
-
-  return total;
+  // Check if errors if it is within the price range
+  try {
+    const filteredProducts = filterProductsByPriceRange(products, min, max);
+    const total = getCartTotal(filteredProducts);
+    return total;
+  } catch (error) {
+    return 0;
+  }
 }
 
 module.exports = {
