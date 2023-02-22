@@ -18,13 +18,16 @@ const exampleProducts = [
   This function should throw an error if:
   - The `cart` array is empty.
 */
-function getCartTotal(cart) {
+const getCartTotal = (cart) => {
   let result = 0;
   for (let product of cart) {
     result += product.priceInCents;
   }
+  if (cart.length === 0) {
+    throw "Error : Cart is empty";
+  }
   return result;
-}
+};
 
 /*
   This function should throw an error if:
@@ -40,8 +43,19 @@ function filterProductsByPriceRange(products, min, max) {
   for (let product of products) {
     if (product.priceInCents >= min && product.priceInCents <= max) {
       result.push(product);
+      //write code below this line
+    } else if (product.priceInCents === undefined) {
+      throw `error : No Price In cents for ${product}.`;
     }
   }
+  if (products.length === 0) {
+    throw `error : no Product`;
+  } else if (max <= 0 || min < 0) {
+    throw `error: no price`;
+  } else if (typeof max !== `number` || typeof min !== `number`) {
+    throw `error: not a number`;
+  }
+
   return result;
 }
 
@@ -49,10 +63,14 @@ function filterProductsByPriceRange(products, min, max) {
   If any errors occur in this function, it should return `0`.
 */
 function getTotalOfAllProductsByPriceRange(products, min, max) {
-  const filteredProducts = filterProductsByPriceRange(products, min, max);
-  const total = getCartTotal(filteredProducts);
+  try {
+    const filteredProducts = filterProductsByPriceRange(products, min, max);
+    const total = getCartTotal(filteredProducts);
 
-  return total;
+    return total;
+  } catch (e) {
+    return 0;
+  }
 }
 
 module.exports = {
